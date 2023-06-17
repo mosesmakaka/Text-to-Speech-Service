@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text-to-Speech</title>
+</head>
+<body>
+    <h1>Text-to-Speech</h1>
+    <form method="POST" action="{% url 'tts' %}">
+        {% csrf_token %}
+        <textarea name="text" rows="4" cols="50"></textarea><br>
+        <input type="submit" value="Generate Audio">
+    </form>
+    {% if audio_path %}
+        <audio controls>
+            <source src="{{ audio_path }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    {% endif %}
+</body>
+</html>

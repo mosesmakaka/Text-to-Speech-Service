@@ -1,0 +1,12 @@
+<form method="POST" action="{% url 'text_to_speech' %}">
+    {% csrf_token %}
+    <textarea name="transcript" rows="4" cols="50" placeholder="Enter your text here..."></textarea>
+    <br>
+    <button type="submit">Convert to Speech</button>
+</form>
+<br>
+{% if audio_file %}
+    <audio controls>
+        <source src="{{ audio_file }}" type="audio/wav">
+    </audio>
+{% endif %}

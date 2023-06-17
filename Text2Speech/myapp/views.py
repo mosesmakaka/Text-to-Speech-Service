@@ -1,32 +1,20 @@
+from django.shortcuts import render
 from django.http import HttpResponse
-from gtts import gTTS
 import os
+from gtts import gTTS
 
-def text_to_speech(request):
-    # Path to the transcript file
-    transcript_file = os.path.join(os.path.dirname(__file__), 'transcript.txt')
+def tts_view(request):
+    if request.method == 'POST':
+        text = request.POST.get('text')
+        if text:
+            # Generate the audio file
+            tts = gTTS(text)
+            audio_file = 'audio.mp3'
+            tts.save(audio_file)
 
-    # Read the transcript from the file
-    with open(transcript_file, 'r') as file:
-        transcript = file.read()
+            # Get the absolute path of the audio file
+            audio_path = os.path.join(os.getcwd(), audio_file)
 
-    # Create a gTTS object and specify the language
-    tts = gTTS(text=transcript, lang='en')
+            return render(request, 'tts.html', {'audio_path': audio_path})
 
-    # Save the generated speech as an audio file
-    audio_file = os.path.join(os.path.dirname(__file__), 'output.wav')
-    tts.save(audio_file)
-
-    # Return a response indicating the success
-    return HttpResponse("Text to speech conversion completed. Audio file saved.")
-
-def play_audio(request):
-    # Path to the audio file
-    audio_file = os.path.join(os.path.dirname(__file__), 'output.wav')
-
-    # Play the audio file using aplay command
-    os.system('aplay -q {}'.format(audio_file))  # Adjust the command based on your system
-
-    # Return a response indicating the success
-    return HttpResponse("Audio file played.")
-
+    return render(request, 'tts.html')
